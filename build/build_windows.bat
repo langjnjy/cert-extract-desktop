@@ -18,11 +18,11 @@ call "%VENV_DIR%\Scripts\activate.bat"
 
 echo ==^> pip 镜像: %PIP_INDEX%
 echo ==^> 安装依赖（PySide6 较大，可能需要数分钟）
-pip install --upgrade pip -q --retries 10 --timeout 180 -i %PIP_INDEX% --trusted-host %PIP_HOST%
+python -m pip install --upgrade pip -q --retries 10 --timeout 180 -i %PIP_INDEX% --trusted-host %PIP_HOST%
 if errorlevel 1 goto pip_failed
-pip install pyinstaller -q --retries 10 --timeout 180 -i %PIP_INDEX% --trusted-host %PIP_HOST%
+python -m pip install pyinstaller -q --retries 10 --timeout 180 -i %PIP_INDEX% --trusted-host %PIP_HOST%
 if errorlevel 1 goto pip_failed
-pip install -r "%SCRIPT_DIR%\requirements.txt" -q --retries 10 --timeout 180 -i %PIP_INDEX% --trusted-host %PIP_HOST%
+python -m pip install -r "%SCRIPT_DIR%\requirements.txt" -q --retries 10 --timeout 180 -i %PIP_INDEX% --trusted-host %PIP_HOST%
 if errorlevel 1 goto pip_failed
 goto pip_ok
 :pip_failed

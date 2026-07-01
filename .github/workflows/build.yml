@@ -27,7 +27,7 @@ jobs:
         env:
           PIP_INDEX_URL: https://pypi.org/simple
           PIP_TRUSTED_HOST: pypi.org
-        run: build\build_windows.bat
+        run: cmd /c build\build_windows.bat
 
       - name: Upload Windows zip
         uses: actions/upload-artifact@v4
