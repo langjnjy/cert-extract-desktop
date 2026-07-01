@@ -46,7 +46,7 @@ cd cert-extract-desktop
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python app.py
+python3 app.py
 ```
 
 ---
