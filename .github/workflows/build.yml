@@ -1,0 +1,82 @@
+# 在 GitHub 云端自动打包 Windows / macOS 安装包
+# 触发方式见下方 on: 段
+
+name: Build Release
+
+on:
+  # 手动：GitHub 仓库 → Actions → Build Release → Run workflow
+  workflow_dispatch:
+  # 打 tag 时自动构建（如 git tag v1.0.1 && git push origin v1.0.1）
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-windows:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Build Windows package
+        env:
+          # GitHub _runner 在海外，用官方 PyPI；国内本地打包仍可用 build_windows.bat 默认清华镜像
+          PIP_INDEX_URL: https://pypi.org/simple
+          PIP_TRUSTED_HOST: pypi.org
+        run: build\build_windows.bat
+
+      - name: Upload Windows zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: TazhengTong-windows
+          path: dist/TazhengTong_windows_v*.zip
+          if-no-files-found: error
+
+  build-macos:
+    name: macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Build macOS package
+        env:
+          PIP_INDEX_URL: https://pypi.org/simple
+          PIP_TRUSTED_HOST: pypi.org
+        run: bash build/build_mac.sh
+
+      - name: Upload macOS zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: TazhengTong-macos
+          path: dist/TazhengTong_mac_v*.zip
+          if-no-files-found: error
+
+  # 仅 push tag 时：把两个平台的 zip 挂到 GitHub Release
+  release:
+    name: Publish Release
+    needs: [build-windows, build-macos]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          generate_release_notes: true

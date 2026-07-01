@@ -1,0 +1,66 @@
+他证通 — Windows 打包说明
+==========================
+
+本文说明如何在 Windows 上从源码打包出可运行的 exe 安装包。
+脚本已默认使用清华 pip 镜像，无需 VPN。
+
+
+一、环境准备
+------------
+只需安装 Python 3.10 或更高版本（推荐 3.11 / 3.12）。
+
+1. 下载安装包
+   官方：https://www.python.org/downloads/windows/
+   国内镜像：https://registry.npmmirror.com/-/binary/python/
+
+2. 运行安装程序，勾选：☑ Add python.exe to PATH
+
+3. 验证安装
+   按 Win+R → 输入 cmd → 回车，执行：
+      python --version
+   显示 Python 3.10.x 或以上即成功。
+
+无需安装 Git、Visual Studio 或其他开发工具。
+
+
+二、打包步骤
+------------
+1. 解压源码到任意目录，例如：
+      D:\work\cert-extract-desktop
+
+2. 进入该文件夹，在资源管理器地址栏输入 cmd 并回车
+
+3. 执行打包脚本：
+      build\build_windows.bat
+
+4. 等待 10～30 分钟（首次需下载 PySide6，体积较大，请保持网络畅通）
+
+5. 出现「完成」后，产物位于：
+      dist\TazhengTong\TazhengTong.exe
+      dist\TazhengTong_windows_v1.0.0.zip
+
+   版本号以根目录 version 文件为准。
+
+
+三、分发注意
+------------
+- 不要只拷贝 .exe，须连同 dist\TazhengTong\ 整个文件夹一起分发
+- 推荐直接分发 dist\TazhengTong_windows_v版本号.zip，解压后运行 exe 即可
+
+
+四、下载失败时
+--------------
+若 pip 安装依赖失败，可换阿里云镜像后重试：
+
+   set PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/
+   set PIP_TRUSTED_HOST=mirrors.aliyun.com
+   build\build_windows.bat
+
+
+五、常见问题
+------------
+- 「'python' 不是内部或外部命令」
+  → 重装 Python 并勾选 Add to PATH，或重启电脑后再试
+
+- 打包报错
+  → 截图完整命令行窗口内容，联系提供源码的人员
