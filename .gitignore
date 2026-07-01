@@ -1,9 +1,10 @@
 .venv/
 build/venv/
+build/TazhengTong/
 dist/
+output/
 __pycache__/
 *.pyc
 *.spec
 .DS_Store
-output/logs/
 *.xlsx
